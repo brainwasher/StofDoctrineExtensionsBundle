@@ -29,6 +29,7 @@ class StofDoctrineExtensionsExtension extends Extension
 
         $container->setParameter('stof_doctrine_extensions.default_locale', $config['default_locale']);
         $container->setParameter('stof_doctrine_extensions.default_file_path', $uploadableConfig['default_file_path']);
+        $container->setParameter('stof_doctrine_extensions.store_relative_path', $uploadableConfig['store_relative_path']);
         $container->setParameter('stof_doctrine_extensions.translation_fallback', $config['translation_fallback']);
         $container->setParameter('stof_doctrine_extensions.persist_default_translation', $config['persist_default_translation']);
 
@@ -100,7 +101,12 @@ class StofDoctrineExtensionsExtension extends Extension
                 ->addMethodCall('setDefaultPath', array($uploadableConfig['default_file_path']));
         }
 
-        // Default FileInfoInterface class
+        if ($uploadableConfig['store_relative_path']) {
+            $container->getDefinition('stof_doctrine_extensions.listener.uploadable')
+                ->addMethodCall('setDefaultPathSaveRelative', array($uploadableConfig['store_relative_path']));
+        }
+
+		// Default FileInfoInterface class
         $container->setParameter('stof_doctrine_extensions.uploadable.default_file_info.class', $uploadableConfig['default_file_info_class']);
 
         if ($uploadableConfig['mime_type_guesser_class']) {
